@@ -1,6 +1,7 @@
 import { geolocation, ipAddress } from '@vercel/edge';
 import { sql } from '@vercel/postgres';
 import { HmacSHA256, enc } from 'crypto-js';
+import { withCorsHeaders } from '@/utils/';
 
 export const config = {
   runtime: 'edge'
@@ -11,6 +12,12 @@ export default async function handler(request: Request) {
   const query = Object.fromEntries(urlParams);
   const uuid = query.uuid;
   const tag = query.tag ?? 'no-tag';
+
+  const headers = withCorsHeaders({
+    'content-type': 'application/json',
+    'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
+  });
+
   if (!uuid) {
     return new Response(
         JSON.stringify({ 
@@ -21,10 +28,7 @@ export default async function handler(request: Request) {
         {
             status: 500,
             statusText: 'ServerException',
-            headers: {
-                'content-type': 'application/json',
-                'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
-            }
+            headers
         }
     )
   }
@@ -42,10 +46,7 @@ export default async function handler(request: Request) {
         {
             status: 500,
             statusText: 'ServerException',
-            headers: {
-                'content-type': 'application/json',
-                'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
-            }
+            headers
         }
     );
   }
@@ -63,31 +64,48 @@ export default async function handler(request: Request) {
         {
             status: 500,
             statusText: 'ServerException',
-            headers: {
-                'content-type': 'application/json',
-                'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
-            }
+            headers
         }
     );
   }
 
   const shelfKey = enc.Hex.stringify(HmacSHA256(message, key));
 
-  const { command, fields, oid, rowCount, rows, } = await sql`insert into shelves(uuid, shelfkey, longitude, latitude, ip_address, tag, country, country_region, region) values(${uuid}, ${shelfKey}, ${longitude}, ${latitude}, ${ip}, ${tag}, ${country}, ${countryRegion}, ${region});`;
-  console.log(`SQL Query Response`);
-  console.log({ command, fields, oid, rowCount, rows });
+  let error: Error | null = null;
+
+  try {
+    await sql`insert into shelves(uuid, shelfkey, longitude, latitude, ip_address, tag, country, country_region, region) values(${uuid}, ${shelfKey}, ${longitude}, ${latitude}, ${ip}, ${tag}, ${country}, ${countryRegion}, ${region});`;
+  } catch (e) {
+    error = e as Error;
+  } 
+
+  if (error) {
+    return new Response(
+        JSON.stringify({
+            ok: false,
+            data: null,
+            error: error.message
+        }),
+        {
+            headers,
+            status: 500,
+            statusText: 'ServerException'
+        }
+    );
+  }
 
   return new Response(
     JSON.stringify({
-        uuid,
-        shelfKey
+        ok: true,
+        data: {
+            uuid,
+            shelfKey
+        },
+        error: null
     }),
     {
       status: 201,
-      headers: {
-        'content-type': 'application/json',
-        'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
-      }
+      headers
     }
   );
 }
