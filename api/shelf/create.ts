@@ -1,5 +1,5 @@
 import { geolocation, ipAddress } from '@vercel/edge';
-import { HmacSHA256 } from 'crypto-js';
+import { HmacSHA256, enc } from 'crypto-js';
 
 export const config = {
   runtime: 'edge'
@@ -43,7 +43,7 @@ export default async function handler(request: Request) {
   const message = JSON.stringify([uuid, latitude, longitude, country, countryRegion, city, region, ip]);
   const key = process.env.VERCEL_HMAC_KEY;
 
-  const shelfKey = HmacSHA256(message, key);
+  const shelfKey = enc.Hex.stringify(HmacSHA256(message, key));
   console.log(shelfKey);
 
   return new Response(
