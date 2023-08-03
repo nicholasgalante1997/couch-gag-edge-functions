@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "format": "prettier --write src",
+    "format": "prettier --config .prettierrc api --write",
     "lint": "eslint \"src/**/*.ts\"",
     "prep": "npm-run-all lint format"
   },
@@ -22,6 +22,8 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "@vercel/edge": "^0.3.4",
+    "@vercel/postgres": "^0.4.1",
     "npm-run-all": "^4.1.5"
   }
 }
