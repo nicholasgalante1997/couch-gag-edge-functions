@@ -1,7 +1,7 @@
 import { geolocation, ipAddress } from '@vercel/edge';
 import { sql } from '@vercel/postgres';
 import { HmacSHA256, enc } from 'crypto-js';
-import { withCorsHeaders } from '@/utils/';
+import { withCorsHeaders } from '../../utils';
 
 export const config = {
   runtime: 'edge'
