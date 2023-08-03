@@ -25,5 +25,5 @@
     "alwaysStrict": true,
     "skipLibCheck": true
   },
-  "files": ["src/**/*.ts"]
+  "files": ["src/**/*.ts", "api/**/*.ts"]
 }

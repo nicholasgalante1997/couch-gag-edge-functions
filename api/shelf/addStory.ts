@@ -1,5 +1,5 @@
 import { sql } from '@vercel/postgres';
-import { withCorsHeaders } from '../../utils';
+import { withCorsHeaders } from '../../src/utils';
 
 export const config = {
   runtime: 'edge'
