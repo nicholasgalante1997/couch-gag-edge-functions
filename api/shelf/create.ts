@@ -1,4 +1,5 @@
 import { geolocation, ipAddress } from '@vercel/edge';
+import { HmacSHA256 } from 'crypto-js';
 
 export const config = {
   runtime: 'edge'
@@ -26,22 +27,41 @@ export default async function handler(request: Request) {
     )
   }
 
-  const { latitude, longitude, countryRegion } = geolocation(request);
-  const ip = ipAddress(request) || 'unidentified_ip_address';
+  const { latitude, longitude, countryRegion, city, country, region } = geolocation(request);
+  const ip = ipAddress(request) || null;
 
+  if (!ip) {
+    return new Response(
+        JSON.stringify({
+            ok: false,
+            data: null,
+            error: 'VercelEdgeFunctionException::MissingIPAddress'
+        })
+    );
+  }
+
+  const message = JSON.stringify([uuid, latitude, longitude, country, countryRegion, city, region, ip]);
+  const key = process.env.VERCEL_HMAC_KEY;
+
+  const shelfKey = HmacSHA256(message, key);
+  console.log(shelfKey);
 
   return new Response(
     JSON.stringify({
         latitude,
         longitude,
         countryRegion,
-        ipAddress: ip
+        country,
+        region,
+        city,
+        ipAddress: ip,
+        shelfKey
     }),
     {
       status: 201,
       headers: {
         'content-type': 'application/json',
-        'x-edge-token': process.env.VERCEL_EDGE_TOKEN
+        'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN
       }
     }
   );
