@@ -1,7 +1,7 @@
 import { next } from '@vercel/edge';
 
 export const config = {
-    matcher: '/api*'
+    matcher: ['/api/example', '/api/shelf/create']
 };
 
 export default function middleware(request: Request) {
