@@ -1,3 +1,4 @@
+import { ipAddress } from '@vercel/edge';
 import { sql } from '@vercel/postgres';
 import { withCorsHeaders } from '../../src/utils';
 
@@ -10,13 +11,14 @@ export default async function handler(request: Request) {
   const query = Object.fromEntries(urlParams);
   const uuid = query.uuid;
   const hash = query.shelfKey;
+  const ip = ipAddress(request);
 
   const headers = withCorsHeaders({
     'content-type': 'application/json',
     'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
   });
 
-  if (!uuid && !hash) {
+  if (!uuid && !hash && !ip) {
     return new Response(
       JSON.stringify({
         ok: false,
@@ -34,11 +36,18 @@ export default async function handler(request: Request) {
   let error: Error | null = null;
   let data: any | null = null;
 
+  function getSqlQuery() {
+    if (uuid) {
+      return `select * from shelves where uuid = ${uuid}`;
+    }
+    if (hash) {
+      return `select * from shelves where shelfkey = ${hash}`
+    }
+    return `select * from shelves where ip_address = ${ip}`;
+  }
+
   try {
-    const query = uuid
-      ? `select * from shelves where uuid = ${uuid}`
-      : `select * from shelves where shelfkey = ${hash}`;
-    const { rows } = await sql`${query}`;
+    const { rows } = await sql`${getSqlQuery()}`;
     if (rows.length) {
       data = rows[0];
     }
