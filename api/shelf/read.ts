@@ -46,6 +46,8 @@ export default async function handler(request: Request) {
     return `select * from shelves where ip_address = ${ip};`;
   }
 
+  console.log('Query is `' + getSqlQuery() + '`');
+
   try {
     const { rows } = await sql`${getSqlQuery()}`;
     if (rows.length) {
