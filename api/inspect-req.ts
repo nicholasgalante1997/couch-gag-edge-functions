@@ -16,14 +16,16 @@ export default async function handler(request: Request) {
 
   return new Response(
     JSON.stringify({
-        ok: true,
-        data: {
-            originUrl: request.url,
-            longitude,
-            latitude,
-            "user-agent": request.headers.get('user-agent'),
-        },
-        error: null
+      ok: true,
+      data: {
+        url: request.url,
+        longitude,
+        latitude,
+        'user-agent': request.headers.get('user-agent'),
+        ipAddress: ip,
+        origin: request.headers.get('Origin') || request.headers.get('origin')
+      },
+      error: null
     }),
     {
       status: 200,

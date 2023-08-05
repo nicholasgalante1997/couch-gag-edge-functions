@@ -2,10 +2,9 @@
   "name": "couch-gag-edge-functions",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "format": "prettier --config .prettierrc api --write",
-    "lint": "eslint \"src/**/*.ts\"",
+    "format": "prettier --config .prettierrc api src --write",
     "prep": "npm-run-all lint format"
   },
   "keywords": [],
@@ -13,12 +12,6 @@
   "license": "ISC",
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "eslint": "^8.0.1",
-    "eslint-config-standard-with-typescript": "^37.0.0",
-    "eslint-plugin-import": "^2.25.2",
-    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
-    "eslint-plugin-promise": "^6.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6"
   },

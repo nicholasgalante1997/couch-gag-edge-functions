@@ -18,24 +18,26 @@ export default async function handler(request: Request) {
 
   if (!uuid && !hash) {
     return new Response(
-        JSON.stringify({ 
-            ok: false, 
-            data: null, 
-            error: 'VercelEdgeFunctionException::MissingShelfIdentifier' 
-        }),
-        {
-            status: 500,
-            statusText: 'ServerException',
-            headers
-        }
-    )
+      JSON.stringify({
+        ok: false,
+        data: null,
+        error: 'VercelEdgeFunctionException::MissingShelfIdentifier'
+      }),
+      {
+        status: 500,
+        statusText: 'ServerException',
+        headers
+      }
+    );
   }
 
   let error: Error | null = null;
   let data: any | null = null;
 
   try {
-    const query = uuid ? `select * from shelves where uuid = ${uuid}` : `select * from shelves where shelfkey = ${hash}`;
+    const query = uuid
+      ? `select * from shelves where uuid = ${uuid}`
+      : `select * from shelves where shelfkey = ${hash}`;
     const { rows } = await sql`${query}`;
     if (rows.length) {
       data = rows[0];
@@ -48,15 +50,18 @@ export default async function handler(request: Request) {
 
   return new Response(
     JSON.stringify(
-      failed ? {
-        ok: false,
-        data: null,
-        error: error?.message
-      } : {
-        ok: true,
-        data,
-        error: null
-    }),
+      failed
+        ? {
+            ok: false,
+            data: null,
+            error: error?.message
+          }
+        : {
+            ok: true,
+            data,
+            error: null
+          }
+    ),
     {
       status: failed ? 500 : 200,
       headers

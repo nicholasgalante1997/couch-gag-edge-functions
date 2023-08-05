@@ -9,6 +9,7 @@
     "declaration": false,
     "declarationMap": false,
     "emitDeclarationOnly": false,
+    "outDir": "build",
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -24,5 +25,5 @@
     "alwaysStrict": true,
     "skipLibCheck": true
   },
-  "files": ["src/**/*.ts", "api/**/*.ts"]
+  "files": ["./src/**/*.ts", "./api/**/*.ts"]
 }

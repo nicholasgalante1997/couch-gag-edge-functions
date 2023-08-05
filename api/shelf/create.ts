@@ -29,41 +29,42 @@ export default async function handler(request: Request) {
    */
   if (!uuid) {
     return new Response(
-        JSON.stringify({ 
-            ok: false, 
-            data: null, 
-            error: 'VercelEdgeFunctionException::MissingUUID' 
-        }),
-        {
-            status: 500,
-            statusText: 'ServerException',
-            headers
-        }
-    )
+      JSON.stringify({
+        ok: false,
+        data: null,
+        error: 'VercelEdgeFunctionException::MissingUUID'
+      }),
+      {
+        status: 500,
+        statusText: 'ServerException',
+        headers
+      }
+    );
   }
 
   /**
    * Get the metadata of the request needed to construct a shelf key
    */
-  const { latitude, longitude, countryRegion, city, country, region } = geolocation(request);
+  const { latitude, longitude, countryRegion, city, country, region } =
+    geolocation(request);
   const ip = ipAddress(request) || null;
 
   if (!ip) {
     return new Response(
-        JSON.stringify({
-            ok: false,
-            data: null,
-            error: 'VercelEdgeFunctionException::MissingGeoLocationData'
-        }),
-        {
-            status: 500,
-            statusText: 'ServerException',
-            headers
-        }
+      JSON.stringify({
+        ok: false,
+        data: null,
+        error: 'VercelEdgeFunctionException::MissingGeoLocationData'
+      }),
+      {
+        status: 500,
+        statusText: 'ServerException',
+        headers
+      }
     );
   }
 
-  /** 
+  /**
    * See if we have an existing shelf with this ipAddress
    */
   try {
@@ -89,24 +90,33 @@ export default async function handler(request: Request) {
         data: null,
         error: (e as Error).message
       })
-    )
+    );
   }
 
-  const message = JSON.stringify([uuid, latitude, longitude, country, countryRegion, city, region, ip]);
+  const message = JSON.stringify([
+    uuid,
+    latitude,
+    longitude,
+    country,
+    countryRegion,
+    city,
+    region,
+    ip
+  ]);
   const key = process.env.VERCEL_HMAC_KEY;
 
   if (!key) {
     return new Response(
-        JSON.stringify({
-            ok: false,
-            data: null,
-            error: 'VercelEdgeFunctionException::MissingEnvKey'
-        }),
-        {
-            status: 500,
-            statusText: 'ServerException',
-            headers
-        }
+      JSON.stringify({
+        ok: false,
+        data: null,
+        error: 'VercelEdgeFunctionException::MissingEnvKey'
+      }),
+      {
+        status: 500,
+        statusText: 'ServerException',
+        headers
+      }
     );
   }
 
@@ -118,31 +128,31 @@ export default async function handler(request: Request) {
     await sql`insert into shelves(uuid, shelfkey, longitude, latitude, ip_address, tag, country, country_region, region) values(${uuid}, ${shelfKey}, ${longitude}, ${latitude}, ${ip}, ${tag}, ${country}, ${countryRegion}, ${region});`;
   } catch (e) {
     error = e as Error;
-  } 
+  }
 
   if (error) {
     return new Response(
-        JSON.stringify({
-            ok: false,
-            data: null,
-            error: error.message
-        }),
-        {
-            headers,
-            status: 500,
-            statusText: 'ServerException'
-        }
+      JSON.stringify({
+        ok: false,
+        data: null,
+        error: error.message
+      }),
+      {
+        headers,
+        status: 500,
+        statusText: 'ServerException'
+      }
     );
   }
 
   return new Response(
     JSON.stringify({
-        ok: true,
-        data: {
-            uuid,
-            shelfKey
-        },
-        error: null
+      ok: true,
+      data: {
+        uuid,
+        shelfKey
+      },
+      error: null
     }),
     {
       status: 201,
