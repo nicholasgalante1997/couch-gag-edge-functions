@@ -38,12 +38,12 @@ export default async function handler(request: Request) {
 
   function getSqlQuery() {
     if (uuid) {
-      return `select * from shelves where uuid = ${uuid};`;
+      return `select * from shelves where uuid = '${uuid}';`;
     }
     if (hash) {
-      return `select * from shelves where shelfkey = ${hash};`
+      return `select * from shelves where shelfkey = '${hash}';`
     }
-    return `select * from shelves where ip_address = ${ip};`;
+    return `select * from shelves where ip_address = '${ip}';`;
   }
 
   console.log('Query is `' + getSqlQuery() + '`');
