@@ -39,12 +39,16 @@ export default async function handler(request: Request) {
   const column = uuid ? 'uuid' : hash ? 'hash' : 'ip_address';
   const value = uuid ? uuid : hash ? hash : ip;
 
-  console.log(`select * from shelves where ${column} = '${value}';`)
-
   try {
-    const { rows } = await sql`select * from shelves where ${column} = "${value}";`;
+    const { rows } = await sql`select * from shelves;`;
     if (rows.length) {
-      data = rows[0];
+      const row = rows.find((qRow) => qRow[column] === value);
+      if (!row) {
+        throw new Error("ShelfDoesNotExist")
+      }
+      data = row;
+    } else {
+      throw new Error("ShelfDoesNotExist")
     }
   } catch (e: unknown) {
     error = e as Error;
