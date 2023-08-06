@@ -42,7 +42,7 @@ export default async function handler(request: Request) {
   console.log(`select * from shelves where ${column} = '${value}';`)
 
   try {
-    const { rows } = await sql`select * from shelves where ${column} = '${value}';`;
+    const { rows } = await sql`select * from shelves where ${column} = "${value}";`;
     if (rows.length) {
       data = rows[0];
     }
@@ -63,7 +63,7 @@ export default async function handler(request: Request) {
         : {
             ok: true,
             data,
-            error: null
+            error
           }
     ),
     {
