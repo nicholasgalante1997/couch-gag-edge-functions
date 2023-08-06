@@ -39,7 +39,7 @@ export default async function handler(request: Request) {
   const column = uuid ? 'uuid' : hash ? 'hash' : 'ip_address';
   const value = uuid ? uuid : hash ? hash : ip;
 
-  console.log(`select * from shelves where ${column} = ${value};`)
+  console.log(`select * from shelves where ${column} = '${value}';`)
 
   try {
     const { rows } = await sql`select * from shelves where ${column} = ${value};`;
