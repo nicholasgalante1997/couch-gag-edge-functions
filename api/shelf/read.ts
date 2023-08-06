@@ -36,20 +36,13 @@ export default async function handler(request: Request) {
   let error: Error | null = null;
   let data: any | null = null;
 
-  function getSqlQuery() {
-    if (uuid) {
-      return `select * from shelves where uuid = '${uuid}';`;
-    }
-    if (hash) {
-      return `select * from shelves where shelfkey = '${hash}';`
-    }
-    return `select * from shelves where ip_address = '${ip}';`;
-  }
+  const column = uuid ? 'uuid' : hash ? 'hash' : 'ip_address';
+  const value = uuid ? uuid : hash ? hash : ip;
 
-  console.log('Query is `' + getSqlQuery() + '`');
+  console.log(`select * from shelves where ${column} = ${value};`)
 
   try {
-    const { rows } = await sql`${getSqlQuery()}`;
+    const { rows } = await sql`select * from shelves where ${column} = ${value};`;
     if (rows.length) {
       data = rows[0];
     }
