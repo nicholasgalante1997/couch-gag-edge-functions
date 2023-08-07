@@ -22,6 +22,7 @@ export default async function handler(request: Request) {
         latitude,
         'user-agent': request.headers.get('user-agent'),
         ipAddress: ip,
+        mode: request.mode,
         origin: request.headers.get('Origin') || request.headers.get('origin'),
         headers: headerString
       },

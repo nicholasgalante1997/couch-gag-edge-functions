@@ -13,6 +13,7 @@ class CouchGagHttp implements CouchGagHttpShape {
     return {
       'content-type': 'application/json',
       'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? '',
+      'cache-control': 'public, s-maxage=1200, stale-while-revalidate=600',
       'Access-Control-Allow-Credentials': 'true',
       'Access-Control-Allow-Origin': process.env.VERCEL_COUCH_GAG_HOST ?? '',
       'Access-Control-Allow-Methods': 'GET,OPTIONS',
