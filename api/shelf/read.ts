@@ -1,22 +1,32 @@
 import { ipAddress } from '@vercel/edge';
 import { sql } from '@vercel/postgres';
-import { withCorsHeaders } from '../../src/utils';
+import { getUtils } from '../../utils';
 
 export const config = {
   runtime: 'edge'
 };
 
 export default async function handler(request: Request) {
+  const { http } = getUtils();
+
+  const origin = request.headers.get('Origin') || request.headers.get('origin');
+
+  if (!http.cors(origin ?? '')) {
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        data: null,
+        error: 'CORSException::BanishedOrigin'
+      })
+    );
+  }
+
+  const headers = http.getHeaders();
   const urlParams = new URL(request.url).searchParams;
   const query = Object.fromEntries(urlParams);
   const uuid = query.uuid;
   const hash = query.shelfKey;
   const ip = ipAddress(request);
-
-  const headers = withCorsHeaders({
-    'content-type': 'application/json',
-    'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
-  });
 
   if (!uuid && !hash && !ip) {
     return new Response(
@@ -44,11 +54,11 @@ export default async function handler(request: Request) {
     if (rows.length) {
       const row = rows.find((qRow) => qRow[column] === value);
       if (!row) {
-        throw new Error("ShelfDoesNotExist")
+        throw new Error('ShelfDoesNotExist');
       }
       data = row;
     } else {
-      throw new Error("ShelfDoesNotExist")
+      throw new Error('ShelfDoesNotExist');
     }
   } catch (e: unknown) {
     error = e as Error;

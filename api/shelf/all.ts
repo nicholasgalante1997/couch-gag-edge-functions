@@ -1,15 +1,27 @@
 import { sql } from '@vercel/postgres';
-import { withCorsHeaders } from '../../src/utils';
+import { getUtils } from '../../utils';
 
 export const config = {
   runtime: 'edge'
 };
 
-export default async function handler(_request: Request) {
-  const headers = withCorsHeaders({
-    'content-type': 'application/json',
-    'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
-  });
+export default async function handler(request: Request) {
+  const { http } = getUtils();
+
+  const origin = request.headers.get('Origin') || request.headers.get('origin');
+
+  if (!http.cors(origin ?? '')) {
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        data: null,
+        error: 'CORSException::BanishedOrigin'
+      })
+    );
+  }
+
+  const headers = http.getHeaders();
+
   let error: Error | null = null;
   let data: any | null = null;
 

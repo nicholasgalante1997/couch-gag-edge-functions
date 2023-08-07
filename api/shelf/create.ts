@@ -1,13 +1,27 @@
 import { geolocation, ipAddress } from '@vercel/edge';
 import { sql } from '@vercel/postgres';
 import { HmacSHA256, enc } from 'crypto-js';
-import { withCorsHeaders } from '../../src/utils';
+import { getUtils } from '../../utils';
 
 export const config = {
   runtime: 'edge'
 };
 
 export default async function handler(request: Request) {
+  const { http } = getUtils();
+
+  const origin = request.headers.get('Origin') || request.headers.get('origin');
+
+  if (!http.cors(origin ?? '')) {
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        data: null,
+        error: 'CORSException::BanishedOrigin'
+      })
+    );
+  }
+
   /**
    * Get uuid from params
    */
@@ -19,10 +33,7 @@ export default async function handler(request: Request) {
   /**
    * construct headers
    */
-  const headers = withCorsHeaders({
-    'content-type': 'application/json',
-    'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
-  });
+  const headers = http.getHeaders();
 
   /**
    * Check to see if we have a valid uuid

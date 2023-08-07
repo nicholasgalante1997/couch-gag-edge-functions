@@ -1,18 +1,17 @@
 import { geolocation, ipAddress } from '@vercel/edge';
-import { withCorsHeaders } from '../src/utils';
+import { getUtils } from '../utils';
 
 export const config = {
   runtime: 'edge'
 };
 
 export default async function handler(request: Request) {
-  const headers = withCorsHeaders({
-    'content-type': 'application/json',
-    'x-edge-token': process.env.VERCEL_EDGE_HEADER_TOKEN ?? ''
-  });
-
+  const util = getUtils();
   const { longitude, latitude } = geolocation(request);
   const ip = ipAddress(request) || null;
+
+  const headers = util.http.getHeaders();
+  const headerString = util.http.getHeadersAsString(request.headers);
 
   return new Response(
     JSON.stringify({
@@ -23,7 +22,8 @@ export default async function handler(request: Request) {
         latitude,
         'user-agent': request.headers.get('user-agent'),
         ipAddress: ip,
-        origin: request.headers.get('Origin') || request.headers.get('origin')
+        origin: request.headers.get('Origin') || request.headers.get('origin'),
+        headers: headerString
       },
       error: null
     }),

@@ -4,8 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "format": "prettier --config .prettierrc api src --write",
-    "prep": "npm-run-all lint format"
+    "format": "prettier --config .prettierrc api utils.ts --write",
+    "prep": "npm-run-all format"
   },
   "keywords": [],
   "author": "",
