@@ -6,7 +6,7 @@
   "scripts": {
     "format": "prettier --config .prettierrc api utils.ts --write",
     "prep": "npm-run-all format",
-    "build": "tsc"
+    "__build__": "tsc"
   },
   "keywords": [],
   "author": "",
