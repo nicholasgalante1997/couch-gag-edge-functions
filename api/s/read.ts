@@ -1,12 +1,13 @@
+import { ipAddress } from '@vercel/edge';
 import { sql } from '@vercel/postgres';
-import { getUtils } from '../../utils';
+import { getLib } from '@lib/index.js';
 
 export const config = {
   runtime: 'edge'
 };
 
 export default async function handler(request: Request) {
-  const { http } = getUtils();
+  const { http } = getLib();
 
   const origin = request.headers.get('Origin') || request.headers.get('origin');
 
@@ -21,13 +22,44 @@ export default async function handler(request: Request) {
   }
 
   const headers = http.getHeaders();
+  const urlParams = new URL(request.url).searchParams;
+  const query = Object.fromEntries(urlParams);
+  const uuid = query.uuid;
+  const hash = query.shelfKey;
+  const ip = ipAddress(request);
+
+  if (!uuid && !hash && !ip) {
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        data: null,
+        error: 'VercelEdgeFunctionException::MissingShelfIdentifier'
+      }),
+      {
+        status: 500,
+        statusText: 'ServerException',
+        headers
+      }
+    );
+  }
 
   let error: Error | null = null;
   let data: any | null = null;
 
+  const column = uuid ? 'uuid' : hash ? 'hash' : 'ip_address';
+  const value = uuid ? uuid : hash ? hash : ip;
+
   try {
     const { rows } = await sql`select * from shelves;`;
-    data = rows;
+    if (rows.length) {
+      const row = rows.find((qRow) => qRow[column] === value);
+      if (!row) {
+        throw new Error('ShelfDoesNotExist');
+      }
+      data = row;
+    } else {
+      throw new Error('ShelfDoesNotExist');
+    }
   } catch (e: unknown) {
     error = e as Error;
   }
@@ -45,7 +77,7 @@ export default async function handler(request: Request) {
         : {
             ok: true,
             data,
-            error: null
+            error
           }
     ),
     {

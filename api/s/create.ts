@@ -1,14 +1,14 @@
 import { geolocation, ipAddress } from '@vercel/edge';
 import { sql } from '@vercel/postgres';
 import { HmacSHA256, enc } from 'crypto-js';
-import { getUtils } from '../../utils';
+import { getLib } from '@lib/index.js';
 
 export const config = {
   runtime: 'edge'
 };
 
 export default async function handler(request: Request) {
-  const { http } = getUtils();
+  const { http } = getLib();
 
   const origin = request.headers.get('Origin') || request.headers.get('origin');
 
