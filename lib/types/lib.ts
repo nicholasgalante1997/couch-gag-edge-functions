@@ -1,4 +1,4 @@
-import { CouchGagHttpShape } from "./http.js";
+import { CouchGagHttpShape } from "./http";
 
 interface ILib {
     http: CouchGagHttpShape

@@ -1,2 +1,2 @@
-export * from './http.js';
-export * from './lib.js';
+export * from './http';
+export * from './lib';

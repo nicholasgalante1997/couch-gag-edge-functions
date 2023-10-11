@@ -1,5 +1,5 @@
-import { CouchGagHttp } from './models/index.js';
-import { ILib } from './types/lib.js';
+import { CouchGagHttp } from './models';
+import { ILib } from './types/lib';
 
 class Lib implements ILib {
   http = new CouchGagHttp();

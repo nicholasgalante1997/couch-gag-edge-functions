@@ -1,20 +1,15 @@
 {
   "compilerOptions": {
     "target": "ES2021",
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "useDefineForClassFields": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ES6",
+    "moduleResolution": "Node",
     "resolveJsonModule": true,
     "declaration": false,
     "declarationMap": false,
     "emitDeclarationOnly": false,
     "outDir": "build",
-    "baseUrl": ".",
-    "paths": {
-      "@lib/*": ["./lib/*"],
-      "@api/*": ["./api/*"]
-    },
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,

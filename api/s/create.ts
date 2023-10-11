@@ -1,7 +1,7 @@
 import { geolocation, ipAddress } from '@vercel/edge';
 import { sql } from '@vercel/postgres';
 import { HmacSHA256, enc } from 'crypto-js';
-import { getLib } from '@lib/index.js';
+import { getLib } from '../../lib';
 
 export const config = {
   runtime: 'edge'

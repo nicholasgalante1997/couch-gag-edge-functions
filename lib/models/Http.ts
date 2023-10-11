@@ -1,4 +1,4 @@
-import { CouchGagHttpShape } from "../types/http.js";
+import { CouchGagHttpShape } from "../types";
 
 class CouchGagHttp implements CouchGagHttpShape {
     static ALLOWLISTED_DOMAINS = new Set<string | undefined>([process.env.WEB_BETA, process.env.WEB_GAMMA, process.env.WEB_PROD]);

@@ -1,6 +1,6 @@
 import { ipAddress } from '@vercel/edge';
 import { sql } from '@vercel/postgres';
-import { getLib } from '@lib/index.js';
+import { getLib } from '../../lib';
 
 export const config = {
   runtime: 'edge'
