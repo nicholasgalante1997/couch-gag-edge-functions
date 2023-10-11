@@ -1,6 +1,6 @@
 # Ignore everything (folders and files) on root only
 /*
 !api
-!utils.ts
+!lib
 !tsconfig.json
 !package.json
