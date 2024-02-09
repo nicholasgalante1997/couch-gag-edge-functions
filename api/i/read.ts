@@ -1,5 +1,5 @@
 import { geolocation, ipAddress } from '@vercel/edge';
-import { getLib } from '../../lib';
+import { getLib } from 'lib';
 
 export const config = {
   runtime: 'edge'

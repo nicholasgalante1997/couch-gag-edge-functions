@@ -6,7 +6,7 @@
   "scripts": {
     "format": "prettier --config .prettierrc api lib --write",
     "prep": "npm-run-all format",
-    "__build__": "tsc"
+    "build": "tsc && tsc-alias"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
     "@types/crypto-js": "^4.1.1",
     "@types/node": "^20.4.8",
     "prettier": "^3.0.0",
+    "tsc-alias": "^1.8.8",
     "typescript": "^5.1.6"
   },
   "dependencies": {

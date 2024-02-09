@@ -10,6 +10,11 @@
     "declarationMap": false,
     "emitDeclarationOnly": false,
     "outDir": "build",
+    "baseUrl": ".",
+    "paths": {
+      "lib/*": ["./lib/*"],
+      "api/*": ["./api/*"]
+    },
     "isolatedModules": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
