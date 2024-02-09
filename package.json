@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "format": "prettier --config .prettierrc api utils.ts --write",
+    "format": "prettier --config .prettierrc api lib --write",
     "prep": "npm-run-all format",
     "__build__": "tsc"
   },

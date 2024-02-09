@@ -1,5 +1,5 @@
 import { geolocation, ipAddress } from '@vercel/edge';
-import { getLib } from '../lib';
+import { getLib } from '../../lib';
 
 export const config = {
   runtime: 'edge'
@@ -7,10 +7,11 @@ export const config = {
 
 export default async function handler(request: Request) {
   const util = getLib();
+
   const { longitude, latitude } = geolocation(request);
   const ip = ipAddress(request) || null;
 
-  const headers = util.http.getHeaders();
+  const headers = util.http.getHeaders(request);
   const headerString = util.http.getHeadersAsString(request.headers);
 
   return new Response(

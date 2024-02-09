@@ -1,7 +1,7 @@
-import { CouchGagHttpShape } from "./http";
+import { CouchGagHttpShape } from './http';
 
 interface ILib {
-    http: CouchGagHttpShape
+  http: CouchGagHttpShape;
 }
 
 export { type ILib };
